@@ -21,4 +21,4 @@ polys[2]:=ComputeCharPoly(3);
 polys[3]:=ComputeCharPoly(5);
 polys[4]:=ComputeCharPoly(7);
 
-print polys;
+polys;
