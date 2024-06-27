@@ -298,6 +298,7 @@ ReducibleThreeDim:= function(C,T)
 
 end function;
 
+/*Example*/
 ReducibleOneDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5]);
 ReducibleTwoDim([a^3+a^2+a,a^4+a^3+a^2+1],5911,[2,3]);
 ReducibleThreeDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5]);
