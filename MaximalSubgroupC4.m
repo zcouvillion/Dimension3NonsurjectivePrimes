@@ -207,6 +207,12 @@ end for;
 return frobpolys;
 end function;
 
+
+/*
+Input: Curve, auxiliary primes
+Returns an integer whose prime factors are the possible cases where the geometric maximal subgroup 
+of class 4 may possibly happen.
+*/
 MaximalSubgroupC4 := function(C, T)
     frobs:=ComputeFrobPolys(C,T);
 
