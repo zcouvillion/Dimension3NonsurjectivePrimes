@@ -166,7 +166,7 @@ return q;
 end function;
 
 /* 
-Input: Curve, auxiliary primes
+Input: Two polynomials defining a hyperelliptic curve, auxiliary primes
 Returns list of frobenius polynomials for the given auxiliary primes
 */
 ComputeFrobPolys:= function(C,T)
@@ -216,12 +216,13 @@ frobpolys:=ComputeFrobPolys(C,T);
 chars:=Elements(DirichletGroup(N));
 
 
-M:=[];
+M:=[]; /*M[j] is a quantity that must be 0 if the jth Dirichlet character in our list governs our representation*/
 j:=1;
 for char in chars do
     m:=[];
-    
-    for p in T do
+
+    /*populate "m=[]" with all traces governed by the Dirichlet character "char"*/
+    for p in T do 
         frobpoly:=frobpolys[p];
         i:=1;
         a_p:=Coefficients(frobpoly)[6];
@@ -236,7 +237,7 @@ for char in chars do
     return 0;
     end if;
     if not IsEmpty(m) then
-        M[j]:=Gcd(m);
+        M[j]:=Gcd(m); /*all traces in "m" must be 0 for "char" to be the right character*/
         j:=j+1;
     end if;
 end for;
@@ -250,7 +251,7 @@ return imprim;
 end function; 
 
 /*
-Input: Curve, conductor, auxiliary primes
+Input: Two polynomials defining a hyperelliptic curve, conductor, auxiliary primes
 Returns two integers [a,b]. The prime factors of a are those where the permutation 
 action of G_Q on V_1 \oplus V_2 \oplus V_3 is possibly not contained in A_3. 
 The prime factors of b are those primes where, if the action is contained in A_3,
