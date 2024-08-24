@@ -120,6 +120,7 @@ polys:= [
         21*e_3*e_4*e_5^2*e_6^3 - 7*e_3*e_5^4*e_6^2 + 7*e_4^3*e_5*e_6^3 -
         14*e_4^2*e_5^3*e_6^2 + 7*e_4*e_5^5*e_6 - e_5^7 + 7*e_5*e_6^5)*x + e_6^7
 ];
+/*numberedp[n] is the generic polynomial for P^(n)*/
 numberedp:= [];
 numberedp[2]:= polys[1];
 numberedp[3]:= polys[2];
@@ -166,7 +167,7 @@ return q;
 end function;
 
 /* 
-Input: Curve, auxiliary primes
+Input: Two polynomials defining a hyperelliptic curve, auxiliary primes
 Returns list of frobenius polynomials for the given auxiliary primes
 */
 ComputeFrobPolys:= function(C,T)
@@ -208,14 +209,14 @@ return frobpolys;
 end function;
 
 /*
-Input: Curve, auxiliary primes
+Input: Two polynomials defining a hyperelliptic curve, auxiliary primes
 Returns an integer whose prime factors are the possible one-dimensional cases
 */
 ReducibleOneDim := function(C,T)
 
 frobpolys:=ComputeFrobPolys(C,T);
 
-eigen1list:=[];
+eigen1list:=[]; /*list of values for P_p(1), where p runs through auxiliary primes*/
 j:=1;
 for p in T do
     
@@ -239,7 +240,7 @@ return &*[v-a : a in {r[1]+p/r[1]: r in Roots(Pol!P)}];
 end function;
 
 /*
-Input: Curve, conductor, auxiliary primes
+Input: Two polynomials defining a hyperelliptic curve, conductor, auxiliary primes
 Returns an integers whose prime factors are the possible two-dimensional cases
 */
 ReducibleTwoDim:= function(C,N,T)
@@ -260,14 +261,14 @@ return Gcd(res);
 end function;
 
 /*
-Input: Curve, auxiliary primes
+Input: Two polynomials defining a hyperelliptic curve, auxiliary primes
 Returns an integer whose prime factors are the possible three-dimensional cases
 */
 ReducibleThreeDim:= function(C,T)
     frobpolys:=ComputeFrobPolys(C,T);
 
-    res1 := [];
-    res2 := [];
+    res1 := []; /*quantity that must be 0 for tame inertia weight e=0 case, one for each auxiliary prime*/
+    res2 := []; /*quantity that must be 0 for tame inertia weight e=1 case, one for each auxiliary prime*/
     i:=1;
     for p in T do
         _<u>:=PolynomialRing(Rationals());
