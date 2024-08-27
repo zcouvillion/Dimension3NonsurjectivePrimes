@@ -195,7 +195,10 @@ ComputeFrobPolys:= function(C,T)
         _<b>:=PolynomialRing(GF(p));
 
         q1:=Polynomial(coeffp1);
-        q2:=Polynomial(coeffp2);
+        q2:=0;
+        if IsEmpty(coeffp2) eq false then
+            q2:=Polynomial(coeffp2);
+        end if;
 
         Cp:=HyperellipticCurve([q1,q2]);
    
@@ -221,7 +224,7 @@ ReducibleOneDim := function(C,T)
     j:=1;
     for p in T do
     
-        eigen1list[j]:=Evaluate(p2520(frobpolys[p]),1);
+        eigen1list[j]:=Integers()! Evaluate(p2520(frobpolys[p]),1);
         j:=j+1;
 
     end for;
@@ -302,6 +305,6 @@ ReducibleThreeDim:= function(C,T)
 end function;
 
 /*Example*/
-ReducibleOneDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5]);
-ReducibleTwoDim([a^3+a^2+a,a^4+a^3+a^2+1],5911,[2,3]);
+ReducibleOneDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5,7,11,13,17,19,29,31]);
+
 ReducibleThreeDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5]);
