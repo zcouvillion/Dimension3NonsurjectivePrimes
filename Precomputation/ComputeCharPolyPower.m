@@ -4,15 +4,15 @@ _<t>:=PolynomialRing(Parent(a1));
 _<x>:=PolynomialRing(Parent(e_1));
 
 ComputeCharPoly:=function(e)
-f:=(t-a1^e)*(t-a2^e)*(t-a3^e)*(t-a4^e)*(t-a5^e)*(t-a6^e);
+  f:=(t-a1^e)*(t-a2^e)*(t-a3^e)*(t-a4^e)*(t-a5^e)*(t-a6^e);
 
-g:=x^6;
-
-for i in [1..6] do
-b,p:= IsSymmetric(Coefficients(f)[i],Parent(e_1));
-g:= g + p*x^(i-1);
-end for;
-return g;
+  g:=x^6;
+  
+  for i in [1..6] do
+    b,p:= IsSymmetric(Coefficients(f)[i],Parent(e_1));
+    g:= g + p*x^(i-1);
+  end for;
+  return g;
 end function;
 
 polys := [];
