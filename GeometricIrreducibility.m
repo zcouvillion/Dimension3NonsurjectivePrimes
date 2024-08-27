@@ -147,23 +147,23 @@ end function;
 Given a polynomial p, computes p^(e^n) (raising the roots to e^n)
 */
 IterateSpecializePoly := function(p,e,n)
-q:=p; 
-for i in [1..n] do
-    q:=SpecializePoly(q,e);
-end for;
-return q;
+    q:=p; 
+    for i in [1..n] do
+        q:=SpecializePoly(q,e);
+    end for;
+    return q;
 end function;
 
 /* 
 Given a polynomial p, computes p^(2520) (raising the roots to 2520)
 */
 p2520:=function(p)
-q:=p;
-q:=IterateSpecializePoly(q,2,3);
-q:=IterateSpecializePoly(q,3,2);
-q:=IterateSpecializePoly(q,5,1);
-q:=IterateSpecializePoly(q,7,1);
-return q;
+    q:=p;
+    q:=IterateSpecializePoly(q,2,3);
+    q:=IterateSpecializePoly(q,3,2);
+    q:=IterateSpecializePoly(q,5,1);
+    q:=IterateSpecializePoly(q,7,1);
+    return q;
 end function;
 
 /* 
@@ -171,41 +171,41 @@ Input: Two polynomials defining a hyperelliptic curve, auxiliary primes
 Returns list of frobenius polynomials for the given auxiliary primes
 */
 ComputeFrobPolys:= function(C,T)
-frobpolys:=[];
-for p in T do
+    frobpolys:=[];
+    for p in T do
     
-    coeff:=[];
-    coeff[1]:= Coefficients(C[1]);
-    coeff[2]:= Coefficients(C[2]);
+        coeff:=[];
+        coeff[1]:= Coefficients(C[1]);
+        coeff[2]:= Coefficients(C[2]);
 
-    coeffp1:=[];
-    coeffp2:=[];
+        coeffp1:=[];
+        coeffp2:=[];
     
-    i:=1;
-    for c in coeff[1] do
-        coeffp1[i] := c;
-        i:=i+1; 
-    end for;
-    i:=1;
-    for c in coeff[2] do
-        coeffp2[i] := GF(p)! c; 
-        i:=i+1;
-    end for;
-    _<b>:=PolynomialRing(GF(p));
+        i:=1;
+        for c in coeff[1] do
+            coeffp1[i] := c;
+            i:=i+1; 
+        end for;
+        i:=1;
+        for c in coeff[2] do
+            coeffp2[i] := GF(p)! c; 
+            i:=i+1;
+        end for;
+        _<b>:=PolynomialRing(GF(p));
 
-    q1:=Polynomial(coeffp1);
-    q2:=Polynomial(coeffp2);
+        q1:=Polynomial(coeffp1);
+        q2:=Polynomial(coeffp2);
 
-    Cp:=HyperellipticCurve([q1,q2]);
+        Cp:=HyperellipticCurve([q1,q2]);
    
-    frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
-    frobpoly:=Parent(y)!frobpoly;
+        frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
+        frobpoly:=Parent(y)!frobpoly;
 
-    frobpolys[p]:=frobpoly;
+        frobpolys[p]:=frobpoly;
 
-end for;
+    end for;
 
-return frobpolys;
+    return frobpolys;
 end function;
 
 /*
@@ -214,18 +214,18 @@ Returns an integer whose prime factors are the possible one-dimensional cases
 */
 ReducibleOneDim := function(C,T)
 
-frobpolys:=ComputeFrobPolys(C,T);
+    frobpolys:=ComputeFrobPolys(C,T);
 
-eigen1list:=[]; /*list of values for P_p(1), where p runs through auxiliary primes*/
-j:=1;
-for p in T do
+    eigen1list:=[]; /*list of values for P_p(1), where p runs through auxiliary primes*/
+    j:=1;
+    for p in T do
     
-    eigen1list[j]:=Evaluate(p2520(frobpolys[p]),1);
-    j:=j+1;
+        eigen1list[j]:=Evaluate(p2520(frobpolys[p]),1);
+        j:=j+1;
 
-end for;
+    end for;
 
-return Gcd(eigen1list);
+    return Gcd(eigen1list);
 
 end function;
 
@@ -234,9 +234,9 @@ Returns a polynomial with the roots consisting of all possible traces
 of degree 2 factors of P_p.
 */
 TracePoly:= function(P,p)  
-K:=SplittingField(P); Pol<v>:=PolynomialRing(K);
+    K:=SplittingField(P); Pol<v>:=PolynomialRing(K);
 
-return &*[v-a : a in {r[1]+p/r[1]: r in Roots(Pol!P)}];
+    return &*[v-a : a in {r[1]+p/r[1]: r in Roots(Pol!P)}];
 end function;
 
 /*
@@ -244,20 +244,20 @@ Input: Two polynomials defining a hyperelliptic curve, conductor, auxiliary prim
 Returns an integers whose prime factors are the possible two-dimensional cases
 */
 ReducibleTwoDim:= function(C,N,T)
-_<v>:=PolynomialRing(Rationals());
-frobpolys := ComputeFrobPolys(C,T);
-res:=[];
-i:=1;
+    _<v>:=PolynomialRing(Rationals());
+    frobpolys := ComputeFrobPolys(C,T);
+    res:=[];
+    i:=1;
 
-S:= CuspForms(Gamma0(N));
-for p in T do
-    tracep:=TracePoly(frobpolys[p],p);
-    heckep:=Parent(v)!HeckePolynomial(S,p);
-    res[i]:= Integers()!Resultant(tracep, heckep);
-    i:=i+1;
-end for;
+    S:= CuspForms(Gamma0(N));
+    for p in T do
+        tracep:=TracePoly(frobpolys[p],p);
+        heckep:=Parent(v)!HeckePolynomial(S,p);
+        res[i]:= Integers()!Resultant(tracep, heckep);
+        i:=i+1;
+    end for;
 
-return Gcd(res);
+    return Gcd(res);
 end function;
 
 /*
@@ -273,9 +273,9 @@ ReducibleThreeDim:= function(C,T)
     for p in T do
         _<u>:=PolynomialRing(Rationals());
         frobpoly:=frobpolys[p];
-         a5:=Coefficients(frobpoly)[6];
-         a4:=Coefficients(frobpoly)[5];
-         a3:=Coefficients(frobpoly)[4];
+        a5:=Coefficients(frobpoly)[6];
+        a4:=Coefficients(frobpoly)[5];
+        a3:=Coefficients(frobpoly)[4];
        
         q1:=p^2520*u + (-u - a5) + u*(-u - a5)-a4;
         q2:=-(p^2520*+p^(2520*2)+u^2*p^2520+(-u-a5)^2) - a3;
