@@ -140,29 +140,29 @@ SpecializePoly:=function(p,e)
         g:= g + Evaluate(Coefficients(numberedp[e])[i],w)*x^(i-1);
     end for;
     
-return g;
+    return g;
 end function;
 /*
 Given a polynomial p, computes p^(e^n) (raising the roots to e^n)
 */
 IterateSpecializePoly := function(p,e,n)
-q:=p; 
-for i in [1..n] do
-    q:=SpecializePoly(q,e);
-end for;
-return q;
+    q:=p; 
+    for i in [1..n] do
+        q:=SpecializePoly(q,e);
+    end for;
+    return q;
 end function;
 
 /* 
 Given a polynomial p, computes p^(2520) (raising the roots to 2520)
 */
 p2520:=function(p)
-q:=p;
-q:=IterateSpecializePoly(q,2,3);
-q:=IterateSpecializePoly(q,3,2);
-q:=IterateSpecializePoly(q,5,1);
-q:=IterateSpecializePoly(q,7,1);
-return q;
+    q:=p;
+    q:=IterateSpecializePoly(q,2,3);
+    q:=IterateSpecializePoly(q,3,2);
+    q:=IterateSpecializePoly(q,5,1);
+    q:=IterateSpecializePoly(q,7,1);
+    return q;
 end function;
 
 /* 
@@ -170,41 +170,41 @@ Input: Curve, auxiliary primes
 Returns list of frobenius polynomials for the given auxiliary primes
 */
 ComputeFrobPolys:= function(C,T)
-frobpolys:=[];
-for p in T do
+    frobpolys:=[];
+    for p in T do
+        
+        coeff:=[];
+        coeff[1]:= Coefficients(C[1]);
+        coeff[2]:= Coefficients(C[2]);
     
-    coeff:=[];
-    coeff[1]:= Coefficients(C[1]);
-    coeff[2]:= Coefficients(C[2]);
-
-    coeffp1:=[];
-    coeffp2:=[];
+        coeffp1:=[];
+        coeffp2:=[];
+        
+        i:=1;
+        for c in coeff[1] do
+            coeffp1[i] := c;
+            i:=i+1; 
+        end for;
+        i:=1;
+        for c in coeff[2] do
+            coeffp2[i] := GF(p)! c; 
+            i:=i+1;
+        end for;
+        _<b>:=PolynomialRing(GF(p));
     
-    i:=1;
-    for c in coeff[1] do
-        coeffp1[i] := c;
-        i:=i+1; 
+        q1:=Polynomial(coeffp1);
+        q2:=Polynomial(coeffp2);
+    
+        Cp:=HyperellipticCurve([q1,q2]);
+       
+        frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
+        frobpoly:=Parent(y)!frobpoly;
+    
+        frobpolys[p]:=frobpoly;
+    
     end for;
-    i:=1;
-    for c in coeff[2] do
-        coeffp2[i] := GF(p)! c; 
-        i:=i+1;
-    end for;
-    _<b>:=PolynomialRing(GF(p));
 
-    q1:=Polynomial(coeffp1);
-    q2:=Polynomial(coeffp2);
-
-    Cp:=HyperellipticCurve([q1,q2]);
-   
-    frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
-    frobpoly:=Parent(y)!frobpoly;
-
-    frobpolys[p]:=frobpoly;
-
-end for;
-
-return frobpolys;
+    return frobpolys;
 end function;
 
 
@@ -222,27 +222,27 @@ MaximalSubgroupC4 := function(C, T)
     for p in T do
         frobpoly:=frobs[p];
        
-            K:=SplittingField(frobpoly);
+        K:=SplittingField(frobpoly);
         
-            M:=1;
-            R:=Roots(frobpoly,K);
+        M:=1;
+        R:=Roots(frobpoly,K);
 
-             if Discriminant(frobpoly) ne 0 then
-                for i in R do
-                    for j in R do
-                        if j ne i then
-                            for k in R do
-                                if k ne i and k ne j then
-                                  M := M * (i[1]^2 - j[1]*k[1]);  
-                                end if;
-                            end for;
-                        end if;
-                    end for;
+        if Discriminant(frobpoly) ne 0 then
+            for i in R do
+                for j in R do
+                    if j ne i then
+                        for k in R do
+                            if k ne i and k ne j then
+                                M := M * (i[1]^2 - j[1]*k[1]);  
+                            end if;
+                        end for;
+                    end if;
                 end for;
-                MM[c]:=Integers()!M;
-                c:=c+1;
-            end if;
-        end for;
+            end for;
+            MM[c]:=Integers()!M;
+            c:=c+1;
+        end if;
+    end for;
     return Gcd(MM);
 end function;
 
