@@ -184,7 +184,7 @@ ComputeFrobPolys:= function(C,T)
     
         i:=1;
         for c in coeff[1] do
-            coeffp1[i] := c;
+            coeffp1[i] := GF(p)! c;
             i:=i+1; 
         end for;
         i:=1;
@@ -193,13 +193,12 @@ ComputeFrobPolys:= function(C,T)
             i:=i+1;
         end for;
         _<b>:=PolynomialRing(GF(p));
-
         q1:=Polynomial(coeffp1);
         q2:=0;
         if IsEmpty(coeffp2) eq false then
             q2:=Polynomial(coeffp2);
         end if;
-
+       
         Cp:=HyperellipticCurve([q1,q2]);
    
         frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
@@ -304,7 +303,13 @@ ReducibleThreeDim:= function(C,T)
 
 end function;
 
-/*Example*/
-ReducibleOneDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5,7,11,13,17,19,29,31]);
+/*Example: curve of conductor 5911 from Sutherland DB*/
+C:=[a^3+a^2+a,a^4+a^3+a^2+1];
+ReducibleOneDim(C,[2,3,5,7,11,13,17,19,29,31]);
+ReducibleThreeDim(C,[2,3,5]);
 
-ReducibleThreeDim([a^3+a^2+a,a^4+a^3+a^2+1],[2,3,5]);
+/*Example: curve whose Jacobian is known to have a rational point of order 13*/
+C:=[5*a^8- 14*a^7+33*a^6 -36*a^5 + 30*a^4 + 2*a^3 -16 * a^2 + 20*a -7,0];
+
+ReducibleOneDim(C,[5,7,11,13,17,29]);
+ReducibleThreeDim(C,[5,7,11]);
