@@ -132,7 +132,8 @@ SpecializePoly:=function(p,e)
     g:=x^6;
     
     w:=Reverse(Prune(Coefficients(p)));
-  
+
+    /*sign discrepencies with expressing coefficients with elementary symmetric polynomials*/
     w[1]:= -w[1];
     w[3]:= -w[3];
     w[5]:= -w[5];
@@ -253,6 +254,7 @@ ReducibleTwoDim:= function(C,N,T)
     for p in T do
         tracep:=TracePoly(frobpolys[p],p);
         heckep:=Parent(v)!HeckePolynomial(S,p);
+        /*Check if the Hecke polynomial has a_p as a root, in which case a_p is an eigenvalue for T_p and so might come from an eigenform*/
         res[i]:= Integers()!Resultant(tracep, heckep);
         i:=i+1;
     end for;
