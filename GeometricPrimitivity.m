@@ -140,29 +140,29 @@ SpecializePoly:=function(p,e)
         g:= g + Evaluate(Coefficients(numberedp[e])[i],w)*x^(i-1);
     end for;
     
-return g;
+    return g;
 end function;
 /*
 Given a polynomial p, computes p^(e^n) (raising the roots to e^n)
 */
 IterateSpecializePoly := function(p,e,n)
-q:=p; 
-for i in [1..n] do
-    q:=SpecializePoly(q,e);
-end for;
-return q;
+    q:=p; 
+    for i in [1..n] do
+        q:=SpecializePoly(q,e);
+    end for;
+    return q;
 end function;
 
 /* 
 Given a polynomial p, computes p^(2520) (raising the roots to 2520)
 */
 p2520:=function(p)
-q:=p;
-q:=IterateSpecializePoly(q,2,3);
-q:=IterateSpecializePoly(q,3,2);
-q:=IterateSpecializePoly(q,5,1);
-q:=IterateSpecializePoly(q,7,1);
-return q;
+    q:=p;
+    q:=IterateSpecializePoly(q,2,3);
+    q:=IterateSpecializePoly(q,3,2);
+    q:=IterateSpecializePoly(q,5,1);
+    q:=IterateSpecializePoly(q,7,1);
+    return q;
 end function;
 
 /* 
@@ -170,41 +170,41 @@ Input: Two polynomials defining a hyperelliptic curve, auxiliary primes
 Returns list of frobenius polynomials for the given auxiliary primes
 */
 ComputeFrobPolys:= function(C,T)
-frobpolys:=[];
-for p in T do
+    frobpolys:=[];
+    for p in T do
     
-    coeff:=[];
-    coeff[1]:= Coefficients(C[1]);
-    coeff[2]:= Coefficients(C[2]);
+        coeff:=[];
+        coeff[1]:= Coefficients(C[1]);
+        coeff[2]:= Coefficients(C[2]);
 
-    coeffp1:=[];
-    coeffp2:=[];
+        coeffp1:=[];
+        coeffp2:=[];
     
-    i:=1;
-    for c in coeff[1] do
-        coeffp1[i] := c;
-        i:=i+1; 
-    end for;
-    i:=1;
-    for c in coeff[2] do
-        coeffp2[i] := GF(p)! c; 
-        i:=i+1;
-    end for;
-    _<b>:=PolynomialRing(GF(p));
+        i:=1;
+        for c in coeff[1] do
+            coeffp1[i] := c;
+            i:=i+1; 
+        end for;
+        i:=1;
+        for c in coeff[2] do
+            coeffp2[i] := GF(p)! c; 
+            i:=i+1;
+        end for;
+        _<b>:=PolynomialRing(GF(p));
 
-    q1:=Polynomial(coeffp1);
-    q2:=Polynomial(coeffp2);
+        q1:=Polynomial(coeffp1);
+        q2:=Polynomial(coeffp2);
 
-    Cp:=HyperellipticCurve([q1,q2]);
+        Cp:=HyperellipticCurve([q1,q2]);
    
-    frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
-    frobpoly:=Parent(y)!frobpoly;
+        frobpoly := y^6*Evaluate(Parent(y)!LPolynomial(Cp),1/y);
+        frobpoly:=Parent(y)!frobpoly;
 
-    frobpolys[p]:=frobpoly;
+        frobpolys[p]:=frobpoly;
 
-end for;
+    end for;
 
-return frobpolys;
+    return frobpolys;
 end function;
 
 /*This is essentially the algorithm of the many-authored genus 2 paper
@@ -212,42 +212,41 @@ for dealing with an imprimitive composition into two subspaces.
 */
 ImprimitiveTwoDecomp:= function(C,N,T)
 
-frobpolys:=ComputeFrobPolys(C,T);
-chars:=Elements(DirichletGroup(N));
+    frobpolys:=ComputeFrobPolys(C,T);
+    chars:=Elements(DirichletGroup(N));
 
 
-M:=[]; /*M[j] is a quantity that must be 0 if the jth Dirichlet character in our list governs our representation*/
-j:=1;
-for char in chars do
-    m:=[];
+    M:=[]; /*M[j] is a quantity that must be 0 if the jth Dirichlet character in our list governs our representation*/
+    j:=1;
+    for char in chars do
+        m:=[];
 
-    /*populate "m=[]" with all traces governed by the Dirichlet character "char"*/
-    for p in T do 
-        frobpoly:=frobpolys[p];
-        i:=1;
-        a_p:=Coefficients(frobpoly)[6];
-        if a_p ne 0 and char(p) eq -1 then
-            m[i]:=Integers()!a_p;
-            i:=i+1;
+        /*populate "m=[]" with all traces governed by the Dirichlet character "char"*/
+        for p in T do 
+            frobpoly:=frobpolys[p];
+            i:=1;
+            a_p:=Coefficients(frobpoly)[6];
+            if a_p ne 0 and char(p) eq -1 then
+                m[i]:=Integers()!a_p;
+                i:=i+1;
+            end if;
+        end for;
+        if IsEmpty(m) and Conductor(char) ne 1 then
+            /*There are no conditions on the primes for this specific character. 
+            Try adding more auxiliary primes */
+            return 0;
+        end if;
+        if not IsEmpty(m) then
+            M[j]:=Gcd(m); /*all traces in "m" must be 0 for "char" to be the right character*/
+            j:=j+1;
         end if;
     end for;
-      if IsEmpty(m) and Conductor(char) ne 1 then
-    /*There are no conditions on the primes for this specific character. 
-      Try adding more auxiliary primes */
-    return 0;
-    end if;
-    if not IsEmpty(m) then
-        M[j]:=Gcd(m); /*all traces in "m" must be 0 for "char" to be the right character*/
-        j:=j+1;
-    end if;
-end for;
 
-imprim:=1;
-for n in M do
-    imprim:=imprim*n;
-end for;
-return imprim;
-
+    imprim:=1;
+    for n in M do
+        imprim:=imprim*n;
+    end for;    
+    return imprim;
 end function; 
 
 /*
@@ -261,89 +260,88 @@ ImprimitiveThreeDecomp:=function(C,N,T);
     frobpolys:=ComputeFrobPolys(C,T);
 
 
-/*Phase 1: rule out the primes where the action is not contained in A_3 */
+    /*Phase 1: rule out the primes where the action is not contained in A_3 */
     chars:=Elements(DirichletGroup(N));
 
-M:=[];
-j:=1;
-for char in chars do
-    m:=[];
-    i:=1;
-    for p in T do
-        frobpoly:=frobpolys[p];
-        
-        
-        _<c>:=PolynomialRing(Rationals());
-        a5:=Coefficients(frobpoly)[6];    
-        a4:=Coefficients(frobpoly)[5];
-        a3:=Coefficients(frobpoly)[4];
-        a2:=Coefficients(frobpoly)[3];
-        a1:=Coefficients(frobpoly)[2];
-           
-        q1:=c^3 + (a3*a5-a5^2*a4-a2)*c^2 + (a4*p^3 - a5^2*p^3)*c - p^6;
-        q2:=a5*c^3 - a1*c^2 + (a3*a5*p^3 - a4*a5*p^3)*c + p^6*a5;
-        r_p:=Integers()!Resultant(q1,q2);
-        if r_p ne 0 and char(p) eq -1 then
-            m[i]:=Integers()!r_p;
-            i:=i+1;
-        end if;
-    end for;
-    if IsEmpty(m) and Conductor(char) ne 1 then
-    /*There are no conditions on the primes for this specific character. 
-      Try adding more auxiliary primes */
-    return 0;
-    end if;
-    if not IsEmpty(m) then
-        M[j]:=Gcd(m);
-        j:=j+1;
-    end if;
-end for;
-
-imprimquad:=1;
-for n in M do
-    imprimquad:=imprimquad*n;
-end for;
-
-/*Phase 2: Assuming the action is contained in A_3, rule out primes where the 
-action is nontrivial. This is essentially the same test as the many-authored
-paper for imprimitivity, but with characters mapping to the cyclic group of 
-order 3 instead of order 2.*/
-
-_<z>:=PolynomialRing(Rationals());
-K<zeta>:=NumberField(z^2 + z + 1);
-chars:=Elements(DirichletGroup(N,K,zeta,3));
-
-M:=[];
-
-for char in chars do
-    m:=[];
-    
-    for p in T do
-        frobpoly:=frobpolys[p];
+    M:=[];
+    j:=1;
+    for char in chars do
+        m:=[];
         i:=1;
-        a_p:=Coefficients(frobpoly)[6];
-        if a_p ne 0 and char(p) eq -1 then
-            m[i]:=Integers()!a_p;
-            i:=i+1;
+        for p in T do
+            frobpoly:=frobpolys[p];
+               
+            _<c>:=PolynomialRing(Rationals());
+            a5:=Coefficients(frobpoly)[6];    
+            a4:=Coefficients(frobpoly)[5];
+            a3:=Coefficients(frobpoly)[4];
+            a2:=Coefficients(frobpoly)[3];
+            a1:=Coefficients(frobpoly)[2];
+               
+            q1:=c^3 + (a3*a5-a5^2*a4-a2)*c^2 + (a4*p^3 - a5^2*p^3)*c - p^6;
+            q2:=a5*c^3 - a1*c^2 + (a3*a5*p^3 - a4*a5*p^3)*c + p^6*a5;
+            r_p:=Integers()!Resultant(q1,q2);
+            if r_p ne 0 and char(p) eq -1 then
+                m[i]:=Integers()!r_p;
+                i:=i+1;
+            end if;
+        end for;
+        if IsEmpty(m) and Conductor(char) ne 1 then
+            /*There are no conditions on the primes for this specific character. 
+              Try adding more auxiliary primes */
+            return 0;
+        end if;
+        if not IsEmpty(m) then
+            M[j]:=Gcd(m);
+            j:=j+1;
         end if;
     end for;
-      if IsEmpty(m) and Conductor(char) ne 1 then
-    /*There are no conditions on the primes for this specific character. 
-      Try adding more auxiliary primes */
-    return 0;
-    end if;
-    if not IsEmpty(m) then
-        M[j]:=Gcd(m);
-        j:=j+1;
-    end if;
-end for;
 
-imprim:=1;
-for n in M do
-    imprim:=imprim*n;
-end for;
+    imprimquad:=1;
+    for n in M do
+        imprimquad:=imprimquad*n;
+    end for;
+
+    /*Phase 2: Assuming the action is contained in A_3, rule out primes where the 
+    action is nontrivial. This is essentially the same test as the many-authored
+    paper for imprimitivity, but with characters mapping to the cyclic group of 
+    order 3 instead of order 2.*/
+
+    _<z>:=PolynomialRing(Rationals());
+    K<zeta>:=NumberField(z^2 + z + 1);
+    chars:=Elements(DirichletGroup(N,K,zeta,3));
+
+    M:=[];
+
+    for char in chars do
+        m:=[];
     
-return imprimquad, imprim;
+        for p in T do
+            frobpoly:=frobpolys[p];
+            i:=1;
+            a_p:=Coefficients(frobpoly)[6];
+            if a_p ne 0 and char(p) eq -1 then
+                m[i]:=Integers()!a_p;
+                i:=i+1;
+            end if;
+        end for;
+          if IsEmpty(m) and Conductor(char) ne 1 then
+            /*There are no conditions on the primes for this specific character. 
+              Try adding more auxiliary primes */
+            return 0;
+        end if;
+        if not IsEmpty(m) then
+            M[j]:=Gcd(m);
+            j:=j+1;
+        end if;
+    end for;
+
+    imprim:=1;
+    for n in M do
+        imprim:=imprim*n;
+    end for;
+    
+    return imprimquad, imprim;
 
 end function;
 
