@@ -1,4 +1,4 @@
-load "genus 3/GenericPolynomials.m";
+load "GenericPolynomials.m";
 
 // index_power_polys[n] is the generic polynomial for P^(n) 
 
