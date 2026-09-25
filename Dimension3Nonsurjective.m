@@ -1,4 +1,4 @@
-load "genus 3/AuxiliaryFunctions.m"; //load functions regarding general polynomial arithmetic
+load "AuxiliaryFunctions.m"; //load functions regarding general polynomial arithmetic
 
 _<x>:=PolynomialRing(Rationals());
 
