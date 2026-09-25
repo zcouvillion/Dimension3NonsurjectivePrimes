@@ -1,4 +1,4 @@
-load "genus 3/Genus3NonsurjectiveGeneral.m";
+load "Dimension3Nonsurjective.m";
 
 _<T>:=PolynomialRing(Rationals());
 
