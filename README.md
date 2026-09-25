@@ -1,12 +1,12 @@
 This is an implementation of the algorithm in [].
 
-The file "Dimension3Nonsurjective.m" defines the function NonsurjectivePrimes(frobs, N). See Examples.m for example uses of NonsurjectivePrimes.
+The file "Dimension3Nonsurjective.m" defines the function **NonsurjectivePrimes(frobs, N)**. See Examples.m for example uses of **NonsurjectivePrimes**.
 
-Input: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor
+**Input**: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor
 
-Output: If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective *(see Warning below), E is a list such that, if ell is in S, then E[ell] is a possible explanation for nonsurjectivity, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms.
+**Output**: If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective *(see Warning below), E is a list such that, if ell is in S, then E[ell] is a possible explanation for nonsurjectivity, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms.
 
-Practicality: We recommend setting skip_two_four to true if N is large (see Warning below if using this setting).
+**We recommend setting skip_two_four to true if N is large (see Warning below if using this setting).**
 
 There are also optional parameters:
 
