@@ -1,4 +1,4 @@
-load "AuxiliaryFunctions.m"; //load functions regarding general polynomial arithmetic
+load "genus 3/AuxiliaryFunctions.m"; //load functions regarding general polynomial arithmetic
 
 _<x>:=PolynomialRing(Rationals());
 
@@ -13,7 +13,7 @@ ReducibleOneDim := function(frobpolys)
     j:=1;
     for frob in frobpolys do
     
-        p := PrimeDivisors(Coefficients(frob)[1])[1];    
+        p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];    
         eigen1list[j]:= p*Integers()! Evaluate(p2520(frob),1);
         j:=j+1;
 
@@ -63,7 +63,7 @@ ReducibleTwoDim:= function(frobpolys,heckes,N:bound:=-1, flag:=-1, verb:= false)
         
         if flag eq -1 then
             for frob in frobpolys do
-                p := PrimeDivisors(Coefficients(frob)[1])[1];
+                p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
                 if heckes[n][p] eq 0 then
                     have_already:=false; //no precomputed Hecke polynomial (T_p acting on level n) found, so we have to compute
                     break;
@@ -94,7 +94,7 @@ ReducibleTwoDim:= function(frobpolys,heckes,N:bound:=-1, flag:=-1, verb:= false)
         end if;
         
         for frob in frobpolys do
-            p := PrimeDivisors(Coefficients(frob)[1])[1];
+            p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
             tracep:=TracePoly(frob,p); //compute a polynomial whose roots are all candidate Frobenius traces a_p on a two-dimensional subquotient
             
             
@@ -156,7 +156,7 @@ ReducibleTwoDimGamma1:= function(frobs,N)
     
     for frob in frobs do
     
-         p := PrimeDivisors(Coefficients(frob)[1])[1];
+         p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
     
         if N_2 mod p eq 0 then
             continue;
@@ -234,7 +234,7 @@ ReducibleRelatedTwoDim:= function(frobs)
     
     for frob in frobs do
       
-         p := PrimeDivisors(Coefficients(frob)[1])[1];
+         p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
         
         
         new_pol:=p2520(frob);
@@ -285,7 +285,7 @@ ReducibleThreeDim:= function(frobpolys)
     res2 := []; /*quantity that must be 0 for tame inertia weight e=1 case, one for each auxiliary prime*/
     i:=1;
     for frob in frobpolys do
-     p := PrimeDivisors(Coefficients(frob)[1])[1];
+     p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
         _<u>:=PolynomialRing(Integers());
         poly:=p2520(frob);
         a5:=Integers()!Coefficients(poly)[6];
@@ -367,7 +367,7 @@ ImprimitiveTwoDecomp:= function(frobpolys, N)
         i:=1;
         for frob in frobpolys do 
             frobpoly:=frob;
-             p := PrimeDivisors(Coefficients(frob)[1])[1];
+             p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
             
             a_p:=Coefficients(frobpoly)[6];
             if a_p ne 0 and char(p) eq -1 then
@@ -425,7 +425,7 @@ ImprimitiveThreeDecomp:=function(frobpolys,N);
         i:=1;
         for frob in frobpolys do
             frobpoly:=frob;
-             p := PrimeDivisors(Coefficients(frob)[1])[1];
+             p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
                
             _<c>:=PolynomialRing(Rationals());
             a5:=Coefficients(frobpoly)[6];    
@@ -478,9 +478,9 @@ ImprimitiveThreeDecomp:=function(frobpolys,N);
         i:=1;
         for frob in frobpolys do
             frobpoly:=frob;
-             p := PrimeDivisors(Coefficients(frob)[1])[1];
+             p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
             
-            a_p:=Coefficients(frobpoly)[6];
+            a_p:=Integers()!Coefficients(frobpoly)[6];
             
             if a_p ne 0 and char(p) ne 1 then
                 //trace of Frobenius is nonzero, and so imposes a nontrivial congruence condition
@@ -563,7 +563,7 @@ TestC1andC2 := function(ell, frobs)
    three_dim := 0;
    
     for frob in frobs do
-       p := PrimeDivisors(Coefficients(frob)[1])[1];
+       p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
        if p eq ell then
            continue;
        end if;
@@ -619,7 +619,7 @@ TestC3:=function(ell,frobs)
 */
 
     for frob in frobs do
-       p := PrimeDivisors(Coefficients(frob)[1])[1];
+       p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
        if p eq ell then
            continue;
        end if;
@@ -631,7 +631,7 @@ TestC3:=function(ell,frobs)
         _<b>:=PolynomialRing(GF(ell));
         pol:=Polynomial(coeffp);
         
-        ap:=Coefficient(pol,5);
+        ap:=Integers()!Coefficient(pol,5);
         if not (ap eq 0) and not (p eq ell) then
             roots:=Roots(pol, GF(ell));
             for alpha in roots do
@@ -874,6 +874,10 @@ RuleOutMod2 := function(frobs)
     
     for pol in frobs_2 do
     
+        if Evaluate(pol,0) eq 0 then
+            continue;
+        end if;
+    
         coeffs:=Coefficients(pol);                 
         val:=0;                                    
         for i in [1..#coeffs] do      
@@ -883,6 +887,7 @@ RuleOutMod2 := function(frobs)
             end if;
             val := val + a * 2^(i-1);
         end for; 
+        
         
         for i in [1..8] do
             if val notin G[i] then
@@ -900,53 +905,6 @@ RuleOutMod2 := function(frobs)
     
 end function;
 
-RuleOutMod3 := function(frobs)
-    G := [];
-    G[1] := [757,784,847,874,910,976,1030,1066,1120,1183,1222,1249,1312,1339,1456];
-    G[2] := [730,757,784,820,910,1030,1066,1120,1183,1249,1312,1339,1456];
-    G[3] := [757,784,937,964,1030,1066,1156,1183,1249,1312,1402,1456];
-    G[4] := [730,757,784,820,847,874,910,976,1030,1066,1120,1183,1210,1222,1249,1312,1339,1429,1456];
-    G[5] := [730,757,784,820,910,1030,1066,1120,1183,1249,1312,1339,1456];
-    G[6] := [730,757,784,820,910,937,964,1030,1066,1156,1183,1249,1312,1402,1456];
-    G[7] := [730,757,784,937,964,1003,1093,1156,1276,1366,1402];
-    G[8] := [730,757,784,820,910,1003,1030,1066,1093,1120,1183,1249,1276,1312,1339,1366,1456];
-    G[9] := [730,757,784,976,1222];
-    G[10] := [730,757,784,937,964,1093,1156,1366,1402];
-    G[11] := [730,757,784,937,964,1093,1156,1366,1402];
-    
-    ruled_out := [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1];
-    R:=PolynomialRing(GF(3));
-    frobs_3:=[R!pol: pol in frobs];
-    
-    for pol in frobs_3 do
-    
-        coeffs:=Coefficients(pol);                 
-        val:=0;                                    
-        for i in [1..#coeffs] do      
-            a:=0;
-            if coeffs[i] eq 1 then
-                a:=1;
-            end if;
-            if coeffs[i] eq 2 then
-                a:=2;
-            end if;
-            val := val + a * 3^(i-1);
-        end for; 
-        
-        for i in [1..11] do
-            if val notin G[i] then
-                ruled_out[i] := 0;
-            end if;
-        end for;
-        
-        if ruled_out eq [0,0,0,0,0,0,0,0,0,0,0] then
-            return 0;
-        end if;
-    
-    end for;
-    
-    return -1;
-end function;
 
 
 NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , hecke_flag := false , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := true, serres_conjecture_frobs:=3, skip_two_dim:=false)
@@ -1211,10 +1169,9 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
         end for;
     end if;
     
-    //Finally, check ell = 2 and ell = 3 separately
+    //Finally, check ell = 2 separately
     
     e_2:=Valuation(sus_primes,2);
-    e_3:=Valuation(sus_primes,3);
     
     if RuleOutMod2(frobs) eq 0 then
         sus_primes:= Integers()!(sus_primes / (2^e_2));
@@ -1224,13 +1181,6 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
         explanations[2] := "Characteristic polynomials consistent with being contained in a maximal subgroup of GSp(6,2)";
     end if;
     
-    if RuleOutMod3(frobs) eq 0 then
-        sus_primes:= Integers()!(sus_primes / (3^e_3));
-        explanations[3]:="";
-    else
-        sus_primes:=sus_primes*3;
-        explanations[3] := "Characteristic polynomials consistent with being contained in a maximal subgroup of GSp(6,3)";
-    end if;
     
 return 0, PrimeDivisors(sus_primes), explanations, hecke_polys;
 
