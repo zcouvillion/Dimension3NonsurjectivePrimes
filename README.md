@@ -40,6 +40,6 @@ There are also optional parameters. The full definition of ```NonsurjectivePrime
 
 11. ```serre_conductor``` is an integer to override the conductor used for the Serre's conjecture step; this parameter is useful when doing optimizations related to cluster pictures of hyperelliptic curves
 
-**Warning: If ```skip_two_four``` is set to ```true```, then primes where there is a pair of self-dual irreducible subrepresentations of dimensions 2 and 4 is not ruled out. If serre_bound is set to some positive number, then irreducible two-dimensional subquotients coming from newforms of level greater than serre_bound are not ruled out.**
+**Warning: If ```skip_two_four``` is set to ```true```, then primes where there is a pair of self-dual irreducible subrepresentations of dimensions 2 and 4 is not ruled out. If ```serre_bound``` is set to some positive integer, then irreducible two-dimensional subquotients coming from newforms of level greater than ```serre_bound``` are not ruled out. If ```skip_two_dim``` is set to ```true```, then primes where there is an irreducible 2-dimensional subrepresentation are not ruled out.**
 
 
