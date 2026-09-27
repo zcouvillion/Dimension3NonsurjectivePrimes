@@ -2,7 +2,7 @@ This is an implementation of the algorithm in [].
 
 The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePrimes```, which takes as input a collection of Frobenius polynomials and integer divisible by the conductor of a dimension 3 principally polarized abelian variety and outputs a finite list of primes ell containing all such that the mod ell representation is not surjective. See ```Examples.m``` for example uses.
 
-<u>**Instructions:**</u>
+<u>Instructions:</u>
 
 **Input**: Run ```NonsurjectivePrimes(frobs, N) ``` where ```frobs``` is a list of Frobenius polynomials and ```N``` is an integer divisible by the conductor of the abelian variety
 
