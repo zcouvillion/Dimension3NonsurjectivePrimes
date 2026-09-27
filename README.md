@@ -20,7 +20,7 @@ There are also optional parameters. The full definition of ```NonsurjectivePrime
 
 1. ```hecke_polys``` is a list of precomputed Hecke polynomials indexed by prime and level, which can be useful if recycling Hecke polynomials for computations involving many abelian varieties
 
-2. ```hecke_flag:=true``` signals to the function that precomputed Hecke polynomials will be used
+2. ```hecke_flag := true``` signals to the function that precomputed Hecke polynomials will be used
 
 3. ```semistable_primes``` is a list of bad primes which are known to be semistable
 
@@ -40,6 +40,6 @@ There are also optional parameters. The full definition of ```NonsurjectivePrime
 
 11. ```serre_conductor``` is an integer to override the conductor used for the Serre's conjecture step; this parameter is useful when doing optimizations related to cluster pictures of hyperelliptic curves
 
-**Warning: If skip_two_four is set to true, then primes where there is a pair of self-dual irreducible subrepresentations of dimensions 2 and 4 is not ruled out. If serre_bound is set to some positive number, then irreducible two-dimensional subquotients coming from newforms of level greater than serre_bound are not ruled out.**
+**Warning: If ```skip_two_four``` is set to ```true```, then primes where there is a pair of self-dual irreducible subrepresentations of dimensions 2 and 4 is not ruled out. If serre_bound is set to some positive number, then irreducible two-dimensional subquotients coming from newforms of level greater than serre_bound are not ruled out.**
 
 
