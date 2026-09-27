@@ -10,7 +10,7 @@ The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePr
 
 **Output**: 
 * If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective **(see Warning below)**, E is a list such that, if ell is in S, then E[ell] is list of all possible explanations for nonsurjectivity for the mod ell representation, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms (this list is useful if one wants to recycle Hecke polynomials for repeated applications).
-* If unsuccessful, returns [1,1,1,H].
+* If unsuccessful, returns [1,1,1,H]. This will be returned if the Frobenius polynomials come from an abelian variety with nontrivial endomorphism ring. If an error is returned despite the abelian variety being generic, then more Frobenius polynomials may be necessary.
 
 
 
