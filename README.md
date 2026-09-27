@@ -1,12 +1,18 @@
 This is an implementation of the algorithm in [].
 
-The file "Dimension3Nonsurjective.m" defines the function ```NonsurjectivePrimes(frobs, N)```. See Examples.m for example uses of **NonsurjectivePrimes**.
+The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePrimes```, which takes as input a collection of Frobenius polynomials and integer divisible by the conductor of a dimension 3 principally polarized abelian variety and outputs a finite list of primes ell containing all such that the mod ell representation is not surjective. See ```Examples.m``` for example uses.
 
-**Input**: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor
+**Instructions:**
 
-**Output**: If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective *(see Warning below), E is a list such that, if ell is in S, then E[ell] is a possible explanation for nonsurjectivity, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms. If unsuccessful, returns [1,1,1,H].
+Input: Run ```NonsurjectivePrimes(frobs, N) ``` where ```frobs``` is a list of Frobenius polynomials and ```N``` is an integer divisible by the conductor of the abelian variety
 
-**We recommend setting skip_two_four to true if N is large (see Warning below if using this setting).**
+Output: 
+* If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective **(see Warning below)**, E is a list such that, if ell is in S, then E[ell] is list of all possible explanations for nonsurjectivity for the mod ell representation, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms (this list is useful if one wants to recycle Hecke polynomials for repeated applications).
+* If unsuccessful, returns [1,1,1,H].
+
+**Note: We recommend running ** 
+```NonsurjectivePrimes(frobs,N: skip_two_four := true) ``` 
+** if N is large (see Warning below if using this setting).**
 
 There are also optional parameters:
 
