@@ -1,4 +1,4 @@
-This is an implementation of the algorithm in [].
+This is a Magma implementation of the algorithm in [].
 
 The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePrimes```, which takes as input a collection of Frobenius polynomials and integer divisible by the conductor of a dimension 3 principally polarized abelian variety and outputs a finite list of primes ell containing all such that the mod ell representation is not surjective. See ```Examples.m``` for example uses.
 
@@ -14,7 +14,9 @@ The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePr
 
 
 
-There are also optional parameters:
+There are also optional parameters. The full definition of ```NonsurjectivePrimes``` is of the following form:
+
+```NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , hecke_flag := false , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := true, serres_conjecture_frobs:=3, skip_two_dim:=false, serre_conductor:=-1)```
 
 1. hecke_polys[][] is a list of precomputed Hecke polynomials indexed by prime and level, which can be useful if recycling Hecke polynomials for computations involving many abelian varieties
 
