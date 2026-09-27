@@ -1,6 +1,6 @@
 This is an implementation of the algorithm in [].
 
-The file "Dimension3Nonsurjective.m" defines the function **NonsurjectivePrimes(frobs, N)**. See Examples.m for example uses of **NonsurjectivePrimes**.
+The file "Dimension3Nonsurjective.m" defines the function ```NonsurjectivePrimes(frobs, N)```. See Examples.m for example uses of **NonsurjectivePrimes**.
 
 **Input**: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor
 
