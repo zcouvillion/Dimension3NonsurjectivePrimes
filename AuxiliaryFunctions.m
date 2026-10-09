@@ -45,6 +45,8 @@ Power_Poly:=function(p,e)
         Output: the polynomial p^(e), using precomputed generic polynomials
     */
 
+    _<x>:=PolynomialRing(Rationals());
+
     g:=x^6;
     
     w:=Reverse(Prune(Coefficients(p)));
@@ -89,6 +91,7 @@ p2520:=function(p)
     return q;
 end function;
 
+
 TracePoly:= function(P,p)  
     /*
     Input: a polynomial P and a prime p
@@ -107,7 +110,10 @@ HeckeResultant := function(frobs, n: verb:=false)
     Input: Frobenius polynomials and an integer n
     Output: The product of the following numbers: Norm(det(H_p - (alpha + p/alpha) ) ), where H_p is the p Hecke operator acting on the cuspidal subspace of level n, and alpha is a root of one of the irreducible factors of P_p
 */
-
+    if verb eq true then
+        print "Computing Hecke for level: ",n;
+    end if;
+    
     _<u>:=PolynomialRing(Rationals());
 
      M:=ModularSymbols(n,2,1);
@@ -121,13 +127,13 @@ HeckeResultant := function(frobs, n: verb:=false)
     c:=0;
 
     for frob in frobs do
-        p := PrimeDivisors(Coefficients(frob)[1])[1];
+        p := PrimeDivisors(Integers()!Coefficients(frob)[1])[1];
         
         if verb eq true then
             print "Computing Hecke operator:",p;
         end if;
         
-        time H_p:=HeckeOperator(S,p);
+         H_p:=HeckeOperator(S,p);
         
         if verb eq true then
             print "Done";
