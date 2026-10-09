@@ -1,4 +1,4 @@
-load "AuxiliaryFunctions.m"; //load functions regarding general polynomial arithmetic
+load "AuxiliaryFunctions.m";
 
 _<x>:=PolynomialRing(Rationals());
 
@@ -651,7 +651,7 @@ ExceptionalList := function(frobs)
     Output: a number divisible by primes ell where the mod ell image may be contained in an exceptional subgroup
 */
 
-    divs:= [20,26,28,32,48]; //all elements of the exceptionals have order dividing one of these numbers when viewed in PGSp(6,ell)
+    divs:= [20,26,28,30,32,48]; //all elements of the exceptionals have order dividing one of these numbers when viewed in PGSp(6,ell)
     
     disc_list:=[];
     i:=1;
@@ -659,7 +659,7 @@ ExceptionalList := function(frobs)
     for frob in frobs do
         C:=1;
         for d in divs do
-            g:=ComputeCharPolyApprox(frob,d,1000);
+            g:=ComputeCharPolyApprox(frob,2*d,1000);
             disc:=Discriminant(g);
             C:=C*disc;
         end for;
@@ -681,14 +681,18 @@ TestExceptionals := function(ell,frobs)
     for frob in frobs do
             
             
-            divs:= [20,26,28,32,48];
+            divs:= [20,26,28,30,32,48];
+            
+            if ell eq 3 then
+                divs:= [8,14,16,20,24,26,30];
+            end if;
             
             pass:=1;
             
             for d in divs do
                 
                 
-                g:=ComputeCharPolyApprox(frob, d, 1000);
+                g:=ComputeCharPolyApprox(frob, 2*d, 1000);
                 
                 coeff:=Coefficients(g);
                 coeffp:=[];
@@ -907,10 +911,10 @@ end function;
 
 
 
-NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , hecke_flag := false , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := true, serres_conjecture_frobs:=3, skip_two_dim:=false)
+NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , hecke_flag := false , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := false, serres_conjecture_frobs:=3, skip_two_dim:=false, serre_conductor:=-1)
 
 /*
-Input: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor, (optional) hecke_polys is a list of precomputed Hecke polynomials indexed by prime and level, (optional) hecke_flag if set to true signals to the function that precomputed Hecke polynomials will be used, (optional) semistable_primes is a collection of bad primes which are known to be semistable, (optional) transvection_support is a number whose prime divisors contain all where the mod ell image may fail to contain a transvection, (optional) skip_two_four flag to skip checking for 2+4-decomposition, (optional) serre_bound to bound the levels of modular forms examined, (optional) set hyperelliptic_jacobian to true if it is known the abelian variety is the Jacobian of a hyperelliptic curve for some optimizations on the conductor for the Serre's conjecture step, (optional) setting use_hecke_poly to false uses an alternate algorithm for the two-dimensional case which uses the Hecke operator matrix without computing its characteristic polynomial, (optional) serres_conjecture_frobs is the number of Frobenius polynomials to use in the Serre's conjecture step, (optional) set skip_two_dim:=true to disregard the two-dimensional case
+Input: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor, (optional) hecke_polys is a list of precomputed Hecke polynomials indexed by prime and level, (optional) hecke_flag if set to true signals to the function that precomputed Hecke polynomials will be used, (optional) semistable_primes is a collection of bad primes which are known to be semistable, (optional) transvection_support is a number whose prime divisors contain all where the mod ell image may fail to contain a transvection, (optional) skip_two_four flag to skip checking for 2+4-decomposition, (optional) serre_bound to bound the levels of modular forms examined, (optional) set hyperelliptic_jacobian to true if it is known the abelian variety is the Jacobian of a hyperelliptic curve for some optimizations on the conductor for the Serre's conjecture step, (optional) setting use_hecke_poly to false uses an alternate algorithm for the two-dimensional case which uses the Hecke operator matrix without computing its characteristic polynomial, (optional) serres_conjecture_frobs is the number of Frobenius polynomials to use in the Serre's conjecture step, (optional) set skip_two_dim:=true to disregard the two-dimensional case, (optional) serre_conductor is an integer which overrides the conductor for the Serre's conjecture step, useful for when doing optimizations with cluster pictures
 
 Output: If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective *(see Warning below), E is a list such that, if ell is in S, then E[ell] is a possible explanation for nonsurjectivity, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms.
 
@@ -959,6 +963,10 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
     if skip_two_dim eq false then
     
         N_0 := LowerConductor(N, semistable_primes: is_hyperelliptic:= hyperelliptic_jacobian); //use the semistable primes to lower hypothetical Artin conductors of two-dimensional subquotients
+        
+        if serre_conductor ne -1 then
+            N_0 := serre_conductor;
+        end if;
 
         serre_conj_pols := [frobs[i]: i in [1..serres_conjecture_frobs]];
 
