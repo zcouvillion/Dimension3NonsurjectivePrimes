@@ -1,4 +1,4 @@
-This is a Magma implementation of the algorithm in [].
+This is a Magma implementation of the algorithm in the preprint "Computing nonsurjective primes for Galois representations associated to abelian varieties of dimension 3 over Q."
 
 The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePrimes```, which takes as input a collection of Frobenius polynomials and integer divisible by the conductor of a dimension 3 principally polarized abelian variety and outputs a finite list of primes ell containing all such that the mod ell representation is not surjective. See ```Examples.m``` for example uses.
 
