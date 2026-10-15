@@ -721,43 +721,7 @@ TestExceptionals := function(ell,frobs)
 
 end function;
 
-TestExceptionalLieType := function(frobs)
-/* 
-    Input: Frobenius polynomials
-    Output: an integer supported on the primes in {2,3,5,7,11,13} where the Galois image may be contained in a low-rank Lie type exceptional subgroup
-*/
-    leftover:=[2,3,5,7,11,13];
-    ruledout := 2*3*5*7*11*13;
-    j:=1;
 
-    for ell in leftover do
-        
-        for frob in frobs do
-            
-            coeff:=Coefficients(frob);
-            coeffp:=[];
-            for i in [1..7] do
-                coeffp[i]:=GF(ell) ! Integers()!coeff[i];
-            end for;
-            _<b>:=PolynomialRing(GF(ell));
-            pol:=Polynomial(coeffp);
-            if IsSeparable(pol)  then
-                ord1 := ell * (ell - 1);
-                ord2 := ell^2 - 1;
-        
-                f1:=b^ord1 - 1;
-                f2:=b^ord2 - 1;
-
-                if not (Gcd(pol, f1) eq pol) and not (Gcd(pol,f2) eq pol) then
-                    ruledout:= Integers()!(ruledout/ell);
-                    break;
-                end if;
-            end if;
-
-        end for;
-    end for;
-    return ruledout;
-end function;
 
 WriteExplanation:= function(ell, exp, s)
 
@@ -1124,21 +1088,9 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
               continue;
           end if;
           sus_primes:=sus_primes*ell;
-          explanations:=WriteExplanation(ell,explanations, "Low-rank geometric");
+          explanations:=WriteExplanation(ell,explanations, "Low-rank geometric or exceptional");
     end for;
     
-  
-        exceptionalLie:=TestExceptionalLieType(frobs);
-        for ell in PrimeDivisors(exceptionalLie) do
-              if ell eq 2 then
-                  continue;
-              end if;
-              if transvection_support mod ell ne 0 then
-                  continue;
-              end if;
-              sus_primes:=sus_primes*ell;
-              explanations:=WriteExplanation(ell,explanations, "Possible exceptional Lie Type");
-        end for;
     
     /*
         If we are provided data about transvection, only check for exceptional subgroups at primes without a transvection.
