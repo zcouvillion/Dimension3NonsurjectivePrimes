@@ -179,12 +179,12 @@ frob_pols:= [
 
 /*
 By Remark 7.9, if A[ell] has a two-dimensional subquotient, then it is unramified at 3.
-We set serre_bound equal to the conductor with the power of 3 removed.
+We set serre_conductor equal to the conductor with the power of 3 removed.
 */
 
 
 
-flag, S,E,H := NonsurjectivePrimes(frob_pols,23*71*3^4: serre_bound:=23*71);
+flag, S,E,H := NonsurjectivePrimes(frob_pols,23*71*3^4: serre_conductor:=23*71);
 
 print "Nonsurjective primes for Example 1:";
 
