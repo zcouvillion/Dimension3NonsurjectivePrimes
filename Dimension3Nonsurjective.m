@@ -684,7 +684,7 @@ TestExceptionals := function(ell,frobs)
             divs:= [20,26,28,30,32,48];
             
             if ell eq 3 then
-                divs:= [8,14,16,20,24,26,30];
+                divs:= [6, 8, 10 ];
             end if;
             
             pass:=1;
@@ -875,10 +875,10 @@ end function;
 
 
 
-NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , hecke_flag := false , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := false, serres_conjecture_frobs:=3, skip_two_dim:=false, serre_conductor:=-1)
+NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := false, serres_conjecture_frobs:=3, skip_two_dim:=false, serre_conductor:=-1)
 
 /*
-Input: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor, (optional) hecke_polys is a list of precomputed Hecke polynomials indexed by prime and level, (optional) hecke_flag if set to true signals to the function that precomputed Hecke polynomials will be used, (optional) semistable_primes is a collection of bad primes which are known to be semistable, (optional) transvection_support is a number whose prime divisors contain all where the mod ell image may fail to contain a transvection, (optional) skip_two_four flag to skip checking for 2+4-decomposition, (optional) serre_bound to bound the levels of modular forms examined, (optional) set hyperelliptic_jacobian to true if it is known the abelian variety is the Jacobian of a hyperelliptic curve for some optimizations on the conductor for the Serre's conjecture step, (optional) setting use_hecke_poly to false uses an alternate algorithm for the two-dimensional case which uses the Hecke operator matrix without computing its characteristic polynomial, (optional) serres_conjecture_frobs is the number of Frobenius polynomials to use in the Serre's conjecture step, (optional) set skip_two_dim:=true to disregard the two-dimensional case, (optional) serre_conductor is an integer which overrides the conductor for the Serre's conjecture step, useful for when doing optimizations with cluster pictures
+Input: frobs is a list of Frobenius polynomials associated to a dimension 3 principally polarized abelian variety, N is an integer divisible by the conductor, (optional) hecke_polys is a list of precomputed Hecke polynomials indexed by prime and level, (optional) semistable_primes is a collection of bad primes which are known to be semistable, (optional) transvection_support is a number whose prime divisors contain all where the mod ell image may fail to contain a transvection, (optional) skip_two_four flag to skip checking for 2+4-decomposition, (optional) serre_bound to bound the levels of modular forms examined, (optional) set hyperelliptic_jacobian to true if it is known the abelian variety is the Jacobian of a hyperelliptic curve for some optimizations on the conductor for the Serre's conjecture step, (optional) setting use_hecke_poly to false uses an alternate algorithm for the two-dimensional case which uses the Hecke operator matrix without computing its characteristic polynomial, (optional) serres_conjecture_frobs is the number of Frobenius polynomials to use in the Serre's conjecture step, (optional) set skip_two_dim:=true to disregard the two-dimensional case, (optional) serre_conductor is an integer which overrides the conductor for the Serre's conjecture step, useful for when doing optimizations with cluster pictures
 
 Output: If successful, returns [0, S, E, H], where the first entry 0 is a success flag, S is a finite set of primes containing all primes where the mod ell image is surjective *(see Warning below), E is a list such that, if ell is in S, then E[ell] is a possible explanation for nonsurjectivity, H is a list of Hecke polynomials which were computed throughout the process, where H[n,p] is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms.
 
@@ -887,9 +887,23 @@ Warning: If skip_two_four is set to true, then primes where there is a pair of s
 Practicality: If the conductor of the abelian variety is high, it may not be computationally feasible to run this algorithm without setting skip_two_four to true (see Warning above if using this setting).
 */
     
+    if #frobs lt serres_conjecture_frobs then
+    
+        print "Number of Frobenius polynomials supplied is less than the", serres_conjecture_frobs,"polynomials specified to be used for the Serre's conjecture step.";
+        
+        
+        return false, _, _, H;
+    
+    end if;
+    
     //unless otherwise indicated, consider newforms of level up to N
     if serre_bound eq -1 then
         serre_bound := N;
+    end if;
+
+    hecke_flag := true;
+    if #hecke_polys eq 0 then
+        hecke_flag := false;
     end if;
 
     //if no precomputed Hecke polynomials provided, start a new list
@@ -906,8 +920,6 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
 
     sus_primes:= 2; //2 is always added as a possible nonsurjective prime.
     explanations:=[""];
-    
-    explanations:=WriteExplanation(2,explanations, "Ruling out 2 not supported yet");
 
     bad_primes:=PrimeDivisors(N);
     
@@ -919,7 +931,7 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
     onedim:=ReducibleOneDim(frobs); //integer supported at primes which may have one-dimensional subquotient
     if onedim eq 0 then
         print "One-dimensional subrep could not be ruled out for any prime.";
-        return 1,1,1, hecke_polys;
+        return false,_,_, hecke_polys;
     end if;
     
     twodim:=1; //integer supported at primes which may have two-dimensional subquotient
@@ -1000,13 +1012,13 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
 
         if twodim eq 0 then
             print "Two-dimensional subrep could not be ruled out for any prime.";
-            return 1,1,1, hecke_polys;
+            return false, _,_, hecke_polys;
         end if;
 
           threedim:=ReducibleThreeDim(frobs); //integer supported at primes which may have three-dimensional subquotient
         if threedim eq 0 then
             print "Three-dimensional subrep could not be ruled out for any prime.";
-            return 1,1,1, hecke_polys;
+            return false, _,_,hecke_polys;
         end if;
     
     
@@ -1014,20 +1026,20 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
     imprim2:=ImprimitiveTwoDecomp(frobs,N); //integer supported at primes where there may be an imprimitive 3+3 decomposition
     if imprim2 eq 0 then
         print "Imprimitive 3+3 could not be ruled out for any prime.";
-        return 1,1,1, hecke_polys;
+        return false, _,_, hecke_polys;
     end if;
         
     imprim3:=ImprimitiveThreeDecomp(frobs,N); //integer supported at primes where there may be an imprimitive 2+2+2 decomposition
         
     if imprim3 eq 0 then
          print "Imprimitive 2+2+2 could not be ruled out for any prime.";
-         return 1,1,1, hecke_polys;
+         return false, _,_,hecke_polys;
     end if;
      
     imageC4:=MaximalSubgroupC4(frobs,1000); //integer supported at primes where the image may be contained in a low-rank geometric group
     if imageC4 eq 0 then
         print "C4 image could not be ruled out for any prime.";
-        return 1,1,1, hecke_polys;
+        return false, _,_, hecke_polys;
     end if;
     
     
@@ -1101,7 +1113,7 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
         exceptional_product := ExceptionalList(frobs); //an integer supported at primes which may have image contained in an exceptional
         if exceptional_product eq 0 then
             print "Error with exceptional groups";
-            return 1,1,1,hecke_polys;
+            return false, _,_,hecke_polys;
         end if;
         possible_exceptionals:=PrimeDivisors(exceptional_product);
         
@@ -1142,6 +1154,6 @@ Practicality: If the conductor of the abelian variety is high, it may not be com
     end if;
     
     
-return 0, PrimeDivisors(sus_primes), explanations, hecke_polys;
+return true, PrimeDivisors(sus_primes), explanations, hecke_polys;
 
 end function;
