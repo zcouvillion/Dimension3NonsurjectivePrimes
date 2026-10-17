@@ -6,39 +6,37 @@ The file ```Dimension3Nonsurjective.m``` defines the function ```NonsurjectivePr
 
 **Input**: Run ```NonsurjectivePrimes(frobs, N) ``` where ```frobs``` is a list of Frobenius polynomials and ```N``` is an integer divisible by the conductor of the abelian variety
 
-**Note**: We recommend running ```NonsurjectivePrimes(frobs, N: skip_two_four := true) ``` if ```N > 100 000``` (see Warning below if using this setting).
+**Note**: We recommend running ```NonsurjectivePrimes(frobs, N: skip_two_four := true) ``` if ```N > 100 000```, which skips testing for the hardest maximal subgroup of GSp(6,ell) to rule out (see Warning below if using this setting).
 
 **Output**: 
-* If successful, returns ```[0, S, E, H]```, where the first entry ```0``` is a success flag, ```S``` is a finite set of primes containing all primes where the mod ell image is surjective **(see Warning below)**, ```E``` is a list of strings such that, if ell is in ```S```, then ```E[ell]``` is list of all possible explanations for nonsurjectivity for the mod ell representation, ```H``` is a list of Hecke polynomials which were computed throughout the process, where ```H[n,p]``` is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms (this list is useful if one wants to recycle Hecke polynomials for repeated applications).
-* If unsuccessful, returns ```[1,1,1,H]```. This will be returned if the Frobenius polynomials come from an abelian variety with nontrivial endomorphism ring. If an error is returned despite the abelian variety being generic, then more Frobenius polynomials are needed.
+* If successful, returns four values ```true, S, E, H```, where the first entry ```true``` is a success flag, ```S``` is a finite set of primes containing all primes where the mod ell image is nonsurjective **(see Warning below)**, ```E``` is a list of strings such that, if ell is in ```S```, then ```E[ell]``` is list of all possible explanations for nonsurjectivity for the mod ell representation, ```H``` is a list of Hecke polynomials which were computed throughout the process, where ```H[n,p]``` is the characteristic polynomial of T_p acting on the new subspace of level n cusp forms (this list is useful if one wants to recycle Hecke polynomials for repeated applications).
+* If unsuccessful, returns ```false, undefined, undefined, H```. This will be returned if the Frobenius polynomials come from an abelian variety with nontrivial endomorphism ring. If an error is returned despite the abelian variety being generic, then more Frobenius polynomials are needed.
 
 
 
 There are also optional parameters. The full definition of ```NonsurjectivePrimes``` is of the following form:
 
-```NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *] , hecke_flag := false , semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := true, serres_conjecture_frobs:=3, skip_two_dim:=false, serre_conductor:=-1)```
+```NonsurjectivePrimes:=function(frobs, N: hecke_polys:=[* *], semistable_primes := [], transvection_support := 0, skip_two_four:=false, serre_bound:=-1, hyperelliptic_jacobian := false, use_hecke_poly := true, serres_conjecture_frobs:=3, skip_two_dim:=false, serre_conductor:=-1)```
 
 1. ```hecke_polys``` is a list of precomputed Hecke polynomials indexed by prime and level, which can be useful if recycling Hecke polynomials for computations involving many abelian varieties
 
-2. ```hecke_flag := true``` signals to the function that precomputed Hecke polynomials will be used
+2. ```semistable_primes``` is a list of bad primes which are known to be semistable
 
-3. ```semistable_primes``` is a list of bad primes which are known to be semistable
+3. ```transvection_support``` is an integer with the property that if is not divisible by a prime ell, then mod ell image contains a transvection
 
-4. ```transvection_support``` is an integer whose prime divisors contain all where the mod ell image may fail to contain a transvection
+4. ```skip_two_four := true``` to skip checking for 2+4-decomposition
 
-5. ```skip_two_four := true``` to skip checking for 2+4-decomposition
-
-6. ```serre_bound``` is an integer to bound the levels of modular forms examined
+5. ```serre_bound``` is an integer to bound the levels of modular forms examined
    
-7. ```hyperelliptic_jacobian := true``` if it is known the abelian variety is the Jacobian of a hyperelliptic curve for some optimizations on the conductor for the Serre's conjecture step
+6. ```hyperelliptic_jacobian := true``` if it is known the abelian variety is the Jacobian of a hyperelliptic curve (used for some optimizations on the conductor for the Serre's conjecture step)
 
-8. ```use_hecke_poly := false``` signals to use an alternate algorithm for the two-dimensional case which uses the Hecke operator matrix without computing its characteristic polynomial
+7. ```use_hecke_poly := false``` signals to use an alternate algorithm for the two-dimensional case which uses the Hecke operator matrix without computing its characteristic polynomial
 
-9. ```serres_conjecture_frobs``` is the number of Frobenius polynomials to use in the Serre's conjecture step
+8. ```serres_conjecture_frobs``` is the number of Frobenius polynomials to use in the Serre's conjecture step
 
-10. ```skip_two_dim := true``` to disregard the two-dimensional case altogether
+9. ```skip_two_dim := true``` to disregard the two-dimensional case altogether
 
-11. ```serre_conductor``` is an integer to override the conductor used for the Serre's conjecture step; this parameter is useful when doing optimizations related to cluster pictures of hyperelliptic curves
+10. ```serre_conductor``` is an integer to override the conductor used for the Serre's conjecture step; this parameter is useful when doing optimizations related to cluster pictures of hyperelliptic curves
 
 **Warning: If ```skip_two_four``` is set to ```true```, then primes where there is a pair of self-dual irreducible subrepresentations of dimensions 2 and 4 is not ruled out. If ```serre_bound``` is set to some positive integer, then irreducible two-dimensional subquotients coming from newforms of level greater than ```serre_bound``` are not ruled out. If ```skip_two_dim``` is set to ```true```, then primes where there is an irreducible 2-dimensional subrepresentation are not ruled out.**
 
